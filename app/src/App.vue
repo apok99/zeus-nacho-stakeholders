@@ -40,6 +40,17 @@ const project = reactive({
 
 const stakeholders = ref([])
 
+function getStakeholderList() {
+  if (!Array.isArray(stakeholders.value)) {
+    stakeholders.value = []
+  }
+
+  return stakeholders.value
+}
+
+const stakeholderList = computed(() => getStakeholderList())
+const stakeholderCount = computed(() => stakeholderList.value.length)
+
 const stakeholderSeed = [
   {
     name: 'Acciona Agua, S.A.',
@@ -501,7 +512,7 @@ const canAdvance = computed(() => {
   }
 
   if (currentStep.value === 2) {
-    return stakeholders.value.length > 0
+    return getStakeholderList().length > 0
   }
 
   return true
@@ -512,11 +523,13 @@ const progressBarStyle = computed(() => ({
 }))
 
 const matrix = computed(() => {
+  const list = getStakeholderList()
+
   return influenceOrder.map((influence) => {
     return interestOrder.map((interest) => ({
       influence,
       interest,
-      stakeholders: stakeholders.value.filter(
+      stakeholders: list.filter(
         (item) => item.influence === influence && item.interest === interest,
       ),
     }))
@@ -582,7 +595,9 @@ function addStakeholder() {
     return
   }
 
-  stakeholders.value.push(
+  const list = getStakeholderList()
+
+  list.push(
     createStakeholder({
       ...newStakeholder,
     }),
@@ -600,14 +615,16 @@ function addStakeholder() {
 }
 
 function removeStakeholder(id) {
-  const index = stakeholders.value.findIndex((item) => item.id === id)
+  const list = getStakeholderList()
+
+  const index = list.findIndex((item) => item.id === id)
   if (index >= 0) {
-    stakeholders.value.splice(index, 1)
+    list.splice(index, 1)
   }
 }
 
 function ensureStakeholderCatalog() {
-  if (stakeholders.value.length === 0) {
+  if (getStakeholderList().length === 0) {
     loadStakeholderSuggestions()
   }
 }
@@ -654,7 +671,9 @@ function resetAll() {
 }
 
 function applyStakeholderSeed(seed) {
-  stakeholders.value = seed.map((item) =>
+  const normalizedSeed = Array.isArray(seed) ? seed : []
+
+  stakeholders.value = normalizedSeed.map((item) =>
     createStakeholder({
       ...item,
     }),
@@ -1005,7 +1024,7 @@ watch(currentStep, (step) => {
               </div>
               <div class="flex flex-col items-start gap-3 md:items-end">
                 <div class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary-600 shadow-inner shadow-primary-200">
-                  {{ stakeholders.value.length }} actores registrados
+                  {{ stakeholderCount }} actores registrados
                 </div>
                 <button
                   type="button"
@@ -1119,9 +1138,9 @@ watch(currentStep, (step) => {
               </div>
             </form>
 
-            <div v-if="stakeholders.value.length" class="grid gap-6 md:grid-cols-2">
+            <div v-if="stakeholderCount" class="grid gap-6 md:grid-cols-2">
               <article
-                v-for="stakeholder in stakeholders.value"
+                v-for="stakeholder in stakeholderList"
                 :key="stakeholder.id"
                 class="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
               >
