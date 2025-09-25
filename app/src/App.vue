@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 
 const steps = [
   {
@@ -39,6 +39,324 @@ const project = reactive({
 })
 
 const stakeholders = ref([])
+
+const stakeholderSeed = [
+  {
+    name: 'Acciona Agua, S.A.',
+    type: 'Entidad',
+    category: 'Empresa promotora',
+    role: 'EPC/O&M del proyecto; relación institucional y técnica',
+    organization: 'Acciona',
+  },
+  {
+    name: 'Rafael Mateo',
+    type: 'Persona',
+    category: 'Empresa (energía)',
+    role: 'CEO Acciona Energía; potencial PPA renovable',
+    organization: 'Acciona Energía',
+  },
+  {
+    name: 'José Manuel Entrecanales',
+    type: 'Persona',
+    category: 'Empresa (grupo)',
+    role: 'Presidente Acciona; gobernanza corporativa y reputación',
+    organization: 'Acciona, S.A.',
+  },
+  {
+    name: 'Teresa Ribera',
+    type: 'Persona',
+    category: 'Gobierno central',
+    role: 'Vicepresidenta y Ministra; tutela ambiental y energética',
+    organization: 'MITECO',
+  },
+  {
+    name: 'Dirección Gral. de la Costa y el Mar',
+    type: 'Entidad',
+    category: 'Gobierno central',
+    role: 'Autorización de ocupación DPMT; emisario y toma',
+    organization: 'MITECO',
+  },
+  {
+    name: 'Demarcación de Costas Andalucía-Oriental',
+    type: 'Entidad',
+    category: 'Gobierno central',
+    role: 'Informes y control de proyecto litoral',
+    organization: 'MITECO',
+  },
+  {
+    name: 'Acuamed (Aguas de las Cuencas Mediterráneas)',
+    type: 'Entidad',
+    category: 'Entidad estatal',
+    role: 'Promoción/gestión de infraestructuras de desalación',
+    organization: 'MITECO',
+  },
+  {
+    name: 'Red Eléctrica (Redeia)',
+    type: 'Entidad',
+    category: 'Infraestructura',
+    role: 'Conexión y capacidad de red/subestación',
+    organization: 'Sistema eléctrico',
+  },
+  {
+    name: 'Instituto para la Diversificación y Ahorro de la Energía (IDAE)',
+    type: 'Entidad',
+    category: 'Agencia estatal',
+    role: 'Apoyo a eficiencia/renovables; posibles ayudas',
+    organization: 'MITECO',
+  },
+  {
+    name: 'Juanma Moreno',
+    type: 'Persona',
+    category: 'Gobierno autonómico',
+    role: 'Presidente Junta; agenda política regional',
+    organization: 'Junta de Andalucía',
+  },
+  {
+    name: 'Carmen Crespo',
+    type: 'Persona',
+    category: 'Gobierno autonómico',
+    role: 'Consejera de Agricultura, Pesca, Agua y Desarrollo Rural',
+    organization: 'Junta de Andalucía',
+  },
+  {
+    name: 'Consejería de Sostenibilidad, Medio Ambiente y Economía Azul',
+    type: 'Entidad',
+    category: 'Gobierno autonómico',
+    role: 'Autorizaciones ambientales/espacios protegidos',
+    organization: 'Junta de Andalucía',
+  },
+  {
+    name: 'Dirección Gral. de Planificación y Recursos Hídricos',
+    type: 'Entidad',
+    category: 'Gobierno autonómico',
+    role: 'Planificación hídrica autonómica (CMA)',
+    organization: 'Junta de Andalucía',
+  },
+  {
+    name: 'Alcaldía de Níjar',
+    type: 'Entidad',
+    category: 'Gobierno local',
+    role: 'Licencias urbanísticas y coordinación local',
+    organization: 'Ayuntamiento de Níjar',
+  },
+  {
+    name: 'Javier A. García',
+    type: 'Persona',
+    category: 'Gobierno provincial',
+    role: 'Presidente Diputación de Almería; coordinación territorial',
+    organization: 'Diputación de Almería',
+  },
+  {
+    name: 'Autoridad Portuaria de Almería',
+    type: 'Entidad',
+    category: 'Puerto',
+    role: 'Servidumbres y coordinación marítima si aplica',
+    organization: 'Puerto de Almería',
+  },
+  {
+    name: 'Agencia Andaluza del Agua (CMA)',
+    type: 'Entidad',
+    category: 'Agua autonómica',
+    role: 'Gestión de Cuencas Mediterráneas Andaluzas',
+    organization: 'Junta de Andalucía',
+  },
+  {
+    name: 'Consorcios de abastecimiento Levante Almeriense',
+    type: 'Entidad',
+    category: 'Operador agua',
+    role: 'Contrato de suministro mayorista',
+    organization: 'Andalucía',
+  },
+  {
+    name: 'COEXPHAL',
+    type: 'Entidad',
+    category: 'Asociación empresarial',
+    role: 'Asociación de productores-exportadores de Almería',
+    organization: 'Agro-exportación',
+  },
+  {
+    name: 'CASI (Coop. Agrícola San Isidro)',
+    type: 'Entidad',
+    category: 'Cooperativa agrícola',
+    role: 'Consumo intensivo; contratos de offtake',
+    organization: 'Almería',
+  },
+  {
+    name: 'Unica Group',
+    type: 'Entidad',
+    category: 'Cooperativa agrícola',
+    role: 'Consumo intensivo; exportación hortofrutícola',
+    organization: 'Almería',
+  },
+  {
+    name: 'Vicasol',
+    type: 'Entidad',
+    category: 'Cooperativa agrícola',
+    role: 'Consumo intensivo; destino europeo',
+    organization: 'Almería',
+  },
+  {
+    name: 'Murgiverde',
+    type: 'Entidad',
+    category: 'Cooperativa agrícola',
+    role: 'Consumo intensivo; transformación',
+    organization: 'Almería',
+  },
+  {
+    name: 'ASAJA Almería',
+    type: 'Entidad',
+    category: 'Sindicato agrario',
+    role: 'Representación empresarial agraria',
+    organization: 'Almería',
+  },
+  {
+    name: 'COAG Almería',
+    type: 'Entidad',
+    category: 'Sindicato agrario',
+    role: 'Representación agraria y precios del agua',
+    organization: 'Almería',
+  },
+  {
+    name: 'UPA Andalucía',
+    type: 'Entidad',
+    category: 'Sindicato agrario',
+    role: 'Pequeños productores y regadíos',
+    organization: 'Andalucía',
+  },
+  {
+    name: 'Endesa Andalucía',
+    type: 'Entidad',
+    category: 'Empresa (energía)',
+    role: 'Suministro y potencia contratada',
+    organization: 'Andalucía',
+  },
+  {
+    name: 'CSIC - Estación Experimental de Zonas Áridas (EEZA)',
+    type: 'Entidad',
+    category: 'Academia',
+    role: 'Investigación ecosistemas áridos y biodiversidad',
+    organization: 'CSIC Almería',
+  },
+  {
+    name: 'Universidad de Almería (UAL)',
+    type: 'Entidad',
+    category: 'Academia',
+    role: 'Peritaje hídrico y marino; formación dual',
+    organization: 'Almería',
+  },
+  {
+    name: 'Ecologistas en Acción Andalucía',
+    type: 'Entidad',
+    category: 'ONG ambiental',
+    role: 'Evaluación crítica, litigio y campañas',
+    organization: 'Tercer sector',
+  },
+  {
+    name: 'Greenpeace España',
+    type: 'Entidad',
+    category: 'ONG ambiental',
+    role: 'Campañas marinas y energía',
+    organization: 'Tercer sector',
+  },
+  {
+    name: 'SEO/BirdLife Andalucía',
+    type: 'Entidad',
+    category: 'ONG ambiental',
+    role: 'Aves marinas y ZEPA costeras',
+    organization: 'Tercer sector',
+  },
+  {
+    name: 'Cofradía de Pescadores de Carboneras',
+    type: 'Entidad',
+    category: 'Sector pesquero',
+    role: 'Interacciones con emisario y áreas de pesca',
+    organization: 'Almería',
+  },
+  {
+    name: 'Parque Natural Cabo de Gata-Níjar',
+    type: 'Entidad',
+    category: 'Espacio protegido',
+    role: 'Compatibilidad ambiental y usos',
+    organization: 'Junta de Andalucía',
+  },
+  {
+    name: 'OCU',
+    type: 'Entidad',
+    category: 'Consumidores',
+    role: 'Calidad y precio del agua',
+    organization: 'España',
+  },
+  {
+    name: 'FACUA',
+    type: 'Entidad',
+    category: 'Consumidores',
+    role: 'Defensa del consumidor',
+    organization: 'España',
+  },
+  {
+    name: 'Asociaciones vecinales de Níjar',
+    type: 'Entidad',
+    category: 'Comunidad local',
+    role: 'Licencia social y seguimiento',
+    organization: 'Níjar',
+  },
+  {
+    name: 'La Voz de Almería',
+    type: 'Entidad',
+    category: 'Medios',
+    role: 'Cobertura regional',
+    organization: 'Almería',
+  },
+  {
+    name: 'Canal Sur',
+    type: 'Entidad',
+    category: 'Medios',
+    role: 'Cobertura autonómica',
+    organization: 'Andalucía',
+  },
+  {
+    name: 'RTVE Andalucía',
+    type: 'Entidad',
+    category: 'Medios',
+    role: 'Cobertura estatal/autonómica',
+    organization: 'Andalucía',
+  },
+  {
+    name: 'Divulgadores de clima/agua (Javier Peña, Andreu Escrivà)',
+    type: 'Entidad',
+    category: 'Medios digitales',
+    role: 'Amplificación en RRSS',
+    organization: 'España',
+  },
+  {
+    name: 'Comisión Europea – DG ENV',
+    type: 'Entidad',
+    category: 'Institución UE',
+    role: 'Directiva Hábitats/EIA; supervisión',
+    organization: 'UE',
+  },
+  {
+    name: 'Comisión Europea – DG MARE',
+    type: 'Entidad',
+    category: 'Institución UE',
+    role: 'Política marítima y pesca',
+    organization: 'UE',
+  },
+  {
+    name: 'Banco Europeo de Inversiones (BEI)',
+    type: 'Entidad',
+    category: 'Finanzas UE',
+    role: 'Financiación verde; taxonomía UE',
+    organization: 'UE',
+  },
+  {
+    name: 'Instituto de Crédito Oficial (ICO)',
+    type: 'Entidad',
+    category: 'Finanzas',
+    role: 'Financiación nacional',
+    organization: 'España',
+  },
+]
 
 let milestoneId = 0
 let referenceId = 0
@@ -126,7 +444,10 @@ const discoveryQuestions = reactive(
 
 const newStakeholder = reactive({
   name: '',
-  segment: '',
+  type: '',
+  category: '',
+  role: '',
+  organization: '',
   influence: 'medium',
   interest: 'medium',
   attitude: 'Neutral',
@@ -222,7 +543,11 @@ function createStakeholder(data = {}) {
   return {
     id: ++stakeholderId,
     name: data.name ?? '',
-    segment: data.segment ?? '',
+    type: data.type ?? '',
+    segment: data.segment ?? data.category ?? '',
+    category: data.category ?? data.segment ?? '',
+    role: data.role ?? '',
+    organization: data.organization ?? '',
     influence: data.influence ?? 'medium',
     interest: data.interest ?? 'medium',
     attitude: data.attitude ?? 'Neutral',
@@ -264,7 +589,10 @@ function addStakeholder() {
   )
 
   newStakeholder.name = ''
-  newStakeholder.segment = ''
+  newStakeholder.type = ''
+  newStakeholder.category = ''
+  newStakeholder.role = ''
+  newStakeholder.organization = ''
   newStakeholder.influence = 'medium'
   newStakeholder.interest = 'medium'
   newStakeholder.attitude = 'Neutral'
@@ -315,6 +643,18 @@ function resetAll() {
   currentStep.value = 0
 }
 
+function applyStakeholderSeed(seed) {
+  stakeholders.value = seed.map((item) =>
+    createStakeholder({
+      ...item,
+    }),
+  )
+}
+
+function loadStakeholderSuggestions() {
+  applyStakeholderSeed(stakeholderSeed)
+}
+
 function autofillDiscovery() {
   discoveryQuestions.forEach((question) => {
     const template = discoveryTemplates.find((item) => item.id === question.id)
@@ -355,75 +695,39 @@ function autofill() {
 
   autofillDiscovery()
 
-  stakeholders.value = [
-    createStakeholder({
-      name: 'Ministerio para la Transición Ecológica y Reto Demográfico',
-      segment: 'Administración central',
-      influence: 'high',
-      interest: 'high',
-      attitude: 'Apoyo condicional',
-      notes: 'Órgano competente para la evaluación ambiental y autorizaciones clave.',
-    }),
-    createStakeholder({
-      name: 'Junta de Andalucía (Consejería de Agricultura, Pesca, Agua y Desarrollo Rural)',
-      segment: 'Gobierno autonómico',
-      influence: 'high',
-      interest: 'high',
-      attitude: 'Apoyo condicional',
-      notes: 'Definición de políticas hídricas regionales y apoyo a regantes.',
-    }),
-    createStakeholder({
-      name: 'Ayuntamiento de Níjar',
-      segment: 'Gobierno local',
-      influence: 'medium',
-      interest: 'high',
-      attitude: 'Apoyo cauteloso',
-      notes: 'Impacto urbanístico y expectativas de empleo en el municipio.',
-    }),
-    createStakeholder({
-      name: 'Sindicatos agrarios (COAG, ASAJA)',
-      segment: 'Sector agrario organizado',
-      influence: 'medium',
-      interest: 'high',
-      attitude: 'Apoyo',
-      notes: 'Garantizar suministro hídrico para la agricultura intensiva.',
-    }),
-    createStakeholder({
-      name: 'Cooperativas agrícolas locales',
-      segment: 'Productores locales',
-      influence: 'medium',
-      interest: 'high',
-      attitude: 'Apoyo',
-      notes: 'Beneficiarios directos del incremento en disponibilidad de agua.',
-    }),
-    createStakeholder({
-      name: 'Asociaciones ecologistas (Ecologistas en Acción, Greenpeace)',
-      segment: 'ONG ambiental',
-      influence: 'medium',
-      interest: 'high',
-      attitude: 'Oposición',
-      notes: 'Preocupaciones por impacto costero y consumo energético.',
-    }),
-    createStakeholder({
-      name: 'Empresas exportadoras de frutas y hortalizas',
-      segment: 'Sector privado',
-      influence: 'medium',
-      interest: 'medium',
-      attitude: 'Apoyo condicional',
-      notes: 'Dependen del suministro para sostener contratos internacionales.',
-    }),
-    createStakeholder({
-      name: 'Medios regionales (La Voz de Almería)',
-      segment: 'Medios de comunicación',
-      influence: 'low',
-      interest: 'medium',
-      attitude: 'Vigilante',
-      notes: 'Contribuyen a formar opinión pública regional.',
-    }),
-  ]
+  applyStakeholderSeed(
+    stakeholderSeed.map((item) => ({
+      ...item,
+      influence:
+        ['MITECO', 'Junta de Andalucía', 'Acciona', 'UE'].some((keyword) =>
+          [item.organization, item.category].some((field) =>
+            field?.toLowerCase().includes(keyword.toLowerCase()),
+          ),
+        )
+          ? 'high'
+          : 'medium',
+      interest: ['Cooperativa', 'Agrícola', 'Medios', 'Consumidores'].some((keyword) =>
+        [item.category, item.role].some((field) => field?.toLowerCase().includes(keyword.toLowerCase())),
+      )
+        ? 'high'
+        : 'medium',
+      attitude:
+        ['ONG', 'Ecologistas', 'SEO/BirdLife'].some((keyword) =>
+          [item.category, item.name].some((field) => field?.toLowerCase().includes(keyword.toLowerCase())),
+        )
+          ? 'Vigilante'
+          : 'Neutral',
+    })),
+  )
 }
 
 const nextButtonLabel = computed(() => (currentStep.value === 0 ? 'Iniciar proceso' : 'Continuar'))
+
+watch(currentStep, (step) => {
+  if (step === 2 && stakeholders.value.length === 0) {
+    loadStakeholderSuggestions()
+  }
+})
 </script>
 
 <template>
@@ -686,11 +990,20 @@ const nextButtonLabel = computed(() => (currentStep.value === 0 ? 'Iniciar proce
               <div>
                 <h2 class="text-xl font-semibold text-slate-800">Paso 3 · Identificación y priorización</h2>
                 <p class="mt-1 text-sm text-slate-600">
-                  Registra a cada actor, asigna su nivel de influencia e interés, e identifica la actitud predominante.
+                  Con las respuestas anteriores proponemos un listado inicial editable. Ajusta, elimina o incorpora actores para afinar tu mapa.
                 </p>
               </div>
-              <div class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary-600 shadow-inner shadow-primary-200">
-                {{ stakeholders.value.length }} actores registrados
+              <div class="flex flex-col items-start gap-3 md:items-end">
+                <div class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary-600 shadow-inner shadow-primary-200">
+                  {{ stakeholders.value.length }} actores registrados
+                </div>
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-2 text-xs font-semibold text-primary-600 hover:text-primary-500"
+                  @click="loadStakeholderSuggestions"
+                >
+                  Regenerar propuesta base
+                </button>
               </div>
             </div>
 
@@ -707,12 +1020,39 @@ const nextButtonLabel = computed(() => (currentStep.value === 0 ? 'Iniciar proce
                   />
                 </div>
                 <div class="space-y-2">
-                  <label class="text-sm font-semibold text-slate-700">Segmento / categoría</label>
+                  <label class="text-sm font-semibold text-slate-700">Tipo</label>
                   <input
-                    v-model="newStakeholder.segment"
+                    v-model="newStakeholder.type"
+                    type="text"
+                    class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 shadow-inner shadow-slate-100 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    placeholder="Entidad, persona, agencia..."
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label class="text-sm font-semibold text-slate-700">Categoría</label>
+                  <input
+                    v-model="newStakeholder.category"
                     type="text"
                     class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 shadow-inner shadow-slate-100 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
                     placeholder="Administración, empresa, ONG..."
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label class="text-sm font-semibold text-slate-700">Organización / ámbito</label>
+                  <input
+                    v-model="newStakeholder.organization"
+                    type="text"
+                    class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 shadow-inner shadow-slate-100 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    placeholder="Territorio, institución o grupo"
+                  />
+                </div>
+                <div class="md:col-span-2 space-y-2">
+                  <label class="text-sm font-semibold text-slate-700">Rol o función en el caso</label>
+                  <textarea
+                    v-model="newStakeholder.role"
+                    rows="2"
+                    class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 shadow-inner shadow-slate-100 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    placeholder="Implicación esperada, responsabilidades o motivaciones"
                   />
                 </div>
                 <div class="space-y-2">
@@ -748,13 +1088,13 @@ const nextButtonLabel = computed(() => (currentStep.value === 0 ? 'Iniciar proce
                     </option>
                   </select>
                 </div>
-                <div class="space-y-2">
-                  <label class="text-sm font-semibold text-slate-700">Notas clave</label>
+                <div class="md:col-span-2 space-y-2">
+                  <label class="text-sm font-semibold text-slate-700">Notas internas</label>
                   <textarea
                     v-model="newStakeholder.notes"
-                    rows="3"
+                    rows="2"
                     class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 shadow-inner shadow-slate-100 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
-                    placeholder="Motivaciones, riesgos u oportunidades"
+                    placeholder="Motivaciones, riesgos u oportunidades adicionales"
                   />
                 </div>
               </div>
@@ -773,27 +1113,105 @@ const nextButtonLabel = computed(() => (currentStep.value === 0 ? 'Iniciar proce
               <article
                 v-for="stakeholder in stakeholders.value"
                 :key="stakeholder.id"
-                class="group relative rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                class="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
               >
-                <div class="absolute right-4 top-4 flex items-center gap-2 text-xs text-slate-400">
-                  <span class="inline-flex items-center rounded-full bg-slate-200/60 px-2 py-0.5 font-semibold uppercase tracking-wide">Influ. {{ levelLabels[stakeholder.influence] }}</span>
-                  <span class="inline-flex items-center rounded-full bg-slate-200/60 px-2 py-0.5 font-semibold uppercase tracking-wide">Interés {{ levelLabels[stakeholder.interest] }}</span>
+                <div class="flex items-start justify-between gap-4">
+                  <div class="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                    <span class="inline-flex items-center rounded-full bg-slate-200/60 px-2 py-0.5 font-semibold uppercase tracking-wide">Influ. {{ levelLabels[stakeholder.influence] }}</span>
+                    <span class="inline-flex items-center rounded-full bg-slate-200/60 px-2 py-0.5 font-semibold uppercase tracking-wide">Interés {{ levelLabels[stakeholder.interest] }}</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="inline-flex items-center rounded-full border border-red-200 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-500 transition hover:border-red-300 hover:bg-red-50"
+                    @click="removeStakeholder(stakeholder.id)"
+                  >
+                    Eliminar
+                  </button>
                 </div>
-                <h3 class="pr-24 text-lg font-semibold text-slate-800">{{ stakeholder.name }}</h3>
-                <p class="mt-2 text-sm font-medium uppercase tracking-wide text-primary-600">
-                  {{ stakeholder.segment || 'Segmento no definido' }}
-                </p>
-                <p class="mt-3 text-sm text-slate-600" v-if="stakeholder.notes">{{ stakeholder.notes }}</p>
-                <div class="mt-4 inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Actitud: <span class="ml-2 text-primary-600">{{ stakeholder.attitude }}</span>
+
+                <div class="mt-6 grid gap-5 text-sm text-slate-700 md:grid-cols-2">
+                  <div class="space-y-2">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Stakeholder</label>
+                    <input
+                      v-model="stakeholder.name"
+                      type="text"
+                      class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tipo</label>
+                    <input
+                      v-model="stakeholder.type"
+                      type="text"
+                      class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Categoría</label>
+                    <input
+                      v-model="stakeholder.category"
+                      type="text"
+                      class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Organización / ámbito</label>
+                    <input
+                      v-model="stakeholder.organization"
+                      type="text"
+                      class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    />
+                  </div>
+                  <div class="md:col-span-2 space-y-2">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Rol o función en el caso</label>
+                    <textarea
+                      v-model="stakeholder.role"
+                      rows="2"
+                      class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Influencia</label>
+                    <select
+                      v-model="stakeholder.influence"
+                      class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    >
+                      <option v-for="option in interestOptions" :key="`stakeholder-${stakeholder.id}-influence-${option.value}`" :value="option.value">
+                        {{ option.label }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Interés</label>
+                    <select
+                      v-model="stakeholder.interest"
+                      class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    >
+                      <option v-for="option in interestOptions" :key="`stakeholder-${stakeholder.id}-interest-${option.value}`" :value="option.value">
+                        {{ option.label }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Actitud</label>
+                    <select
+                      v-model="stakeholder.attitude"
+                      class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    >
+                      <option v-for="attitude in attitudeOptions" :key="`stakeholder-${stakeholder.id}-attitude-${attitude}`" :value="attitude">
+                        {{ attitude }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="md:col-span-2 space-y-2">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Notas internas</label>
+                    <textarea
+                      v-model="stakeholder.notes"
+                      rows="2"
+                      class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    />
+                  </div>
                 </div>
-                <button
-                  type="button"
-                  class="mt-6 w-full rounded-full border border-red-200 bg-white py-2 text-sm font-semibold text-red-500 transition hover:border-red-300 hover:bg-red-50"
-                  @click="removeStakeholder(stakeholder.id)"
-                >
-                  Eliminar actor
-                </button>
               </article>
             </div>
             <div v-else class="rounded-3xl border border-dashed border-slate-300 p-10 text-center text-slate-500">
@@ -924,7 +1342,23 @@ const nextButtonLabel = computed(() => (currentStep.value === 0 ? 'Iniciar proce
                               class="rounded-2xl bg-white px-3 py-2 text-xs text-slate-600 shadow-sm"
                             >
                               <p class="font-semibold text-slate-800">{{ stakeholder.name }}</p>
-                              <p class="text-[11px] text-primary-600">{{ stakeholder.attitude }}</p>
+                              <p class="mt-1 flex flex-wrap gap-1 text-[11px] uppercase tracking-wide text-primary-600">
+                                <span>{{ stakeholder.type || 'Tipo no definido' }}</span>
+                                <span v-if="stakeholder.category" class="text-slate-400">·</span>
+                                <span v-if="stakeholder.category">{{ stakeholder.category }}</span>
+                              </p>
+                              <p v-if="stakeholder.organization" class="mt-1 text-[11px] text-slate-500">
+                                Organización: {{ stakeholder.organization }}
+                              </p>
+                              <p v-if="stakeholder.role" class="mt-1 text-[11px] text-slate-500">
+                                Rol: {{ stakeholder.role }}
+                              </p>
+                              <p class="mt-2 text-[11px] font-semibold uppercase tracking-wide text-primary-600">
+                                Actitud: {{ stakeholder.attitude }}
+                              </p>
+                              <p v-if="stakeholder.notes" class="mt-1 text-[11px] text-slate-400">
+                                Nota interna: {{ stakeholder.notes }}
+                              </p>
                             </li>
                           </ul>
                           <p v-if="!cell.stakeholders.length" class="mt-6 text-center text-[11px] italic text-slate-400">
