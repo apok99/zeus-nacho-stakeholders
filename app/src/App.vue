@@ -8,6 +8,11 @@ const steps = [
     subtitle: 'Contexto y alcance inicial',
   },
   {
+    id: 'discovery',
+    title: 'Preguntas de afinado',
+    subtitle: 'Ajusta supuestos clave antes del mapeo',
+  },
+  {
     id: 'stakeholders',
     title: 'Catálogo de actores',
     subtitle: 'Intereses, influencia y actitudes',
@@ -38,6 +43,86 @@ const stakeholders = ref([])
 let milestoneId = 0
 let referenceId = 0
 let stakeholderId = 0
+
+const discoveryTemplates = [
+  {
+    id: 'water-allocation',
+    prompt: '¿Qué % aproximado del agua irá a agricultura vs. industria vs. municipal (si aplica)?',
+    answer:
+      '70% agricultura intensiva (invernaderos/transformación), 25% industria local (agroalimentaria/auxiliar), 5% municipal (puntas estacionales).',
+  },
+  {
+    id: 'energy-mix',
+    prompt:
+      '¿Qué fuente energética tendrá la planta (mix actual y objetivo)? ¿Habrá PPA/renovables onsite (solar/eólica) para reducir huella?',
+    answer:
+      'Suministro de red con mix nacional; objetivo PPA renovable 80–100% y fotovoltaica onsite ~10–15% de cobertura anual (vertido a red + autoconsumo).',
+  },
+  {
+    id: 'brine-solution',
+    prompt:
+      '¿Cuál es la solución prevista para la salmuera (emisario, difusores, dilución) y el plan de monitoreo ambiental?',
+    answer:
+      'Emisario submarino con difusores multipuerto, dilución ≥ 1:40 a 50–100 m; monitoreo trimestral (salinidad, temperatura, bentos, epibiontes) y estación continua en pluma.',
+  },
+  {
+    id: 'intake-technology',
+    prompt:
+      '¿Qué tecnología de captación se prevé (toma abierta, pozos de playa, filtros) y qué medidas de protección de ictiofauna/hábitat marino?',
+    answer:
+      'Toma abierta con rejillas <5 mm, velocidad de aproximación <0,15 m/s y prefiltración; esclusas para mantenimiento y programa de exclusión acústica temporal.',
+  },
+  {
+    id: 'water-pricing',
+    prompt:
+      '¿Tenéis identificados precios/umbrales de asequibilidad del agua para cooperativas y pymes locales?',
+    answer:
+      'Rango objetivo 0,55–0,70 €/m³ para contratos marco con cooperativas; cláusulas de indexación a energía con techo/bonos por eficiencia hídrica.',
+  },
+  {
+    id: 'permits-status',
+    prompt:
+      '¿Qué permisos y administraciones clave están implicados (MITECO, Junta de Andalucía, Autoridad Portuaria/Costas, Ayuntamiento) y su estado?',
+    answer:
+      'EIA en curso (MITECO); informe de Costas/Demarcación Andalucía-Oriental; autorizaciones ambientales unificadas (Junta); licencia municipal condicionada al EIA.',
+  },
+  {
+    id: 'agricultural-offtakers',
+    prompt:
+      '¿Qué actores agrícolas concretos consumen mayor volumen (cooperativas, SATs, exportadoras) y con qué contratos marco?',
+    answer:
+      'COEXPHAL (asociadas), CASI, Unica Group, Vicasol, Murgiverde; PPAs hídricos a 5–10 años con compromisos de eficiencia y calidad.',
+  },
+  {
+    id: 'socioeconomic-impacts',
+    prompt:
+      '¿Qué impactos sociales/económicos se han valorado (empleo local, formación, proveedores) y compromisos medibles?',
+    answer:
+      'Empleo directo 150 obra/40 operación; 20% compras locales; plan de formación dual (UAL/FP) y programa de proveedores Km0.',
+  },
+  {
+    id: 'risk-mitigation',
+    prompt:
+      '¿Qué riesgos veis como más probables (energía/coste, oposición ambiental, turismo/pesca, capacidad de red) y planes de mitigación?',
+    answer:
+      'Riesgo energía (PPA + FV onsite), oposición ambiental (restauración de praderas + transparencia), pesca/turismo (zonificación temporal), red (refuerzo subestación).',
+  },
+  {
+    id: 'operational-schedule',
+    prompt:
+      '¿Qué calendario operativo manejáis (EIA 2025, permisos 2026, obra 2027) y qué dependencias críticas podrían adelantar/retrasar?',
+    answer:
+      'Fechas objetivo confirmadas; críticas: dictamen Costas, compatibilidad Red Eléctrica, servidumbres de emisario y acuerdos con cooperativas para offtake.',
+  },
+]
+
+const discoveryQuestions = reactive(
+  discoveryTemplates.map(({ id, prompt }) => ({
+    id,
+    prompt,
+    answer: '',
+  })),
+)
 
 const newStakeholder = reactive({
   name: '',
@@ -91,6 +176,10 @@ const canAdvance = computed(() => {
   }
 
   if (currentStep.value === 1) {
+    return discoveryQuestions.every((question) => question.answer.trim())
+  }
+
+  if (currentStep.value === 2) {
     return stakeholders.value.length > 0
   }
 
@@ -213,10 +302,26 @@ function resetProject() {
   project.references.splice(0)
 }
 
+function resetDiscovery() {
+  discoveryQuestions.forEach((question) => {
+    question.answer = ''
+  })
+}
+
 function resetAll() {
   resetProject()
+  resetDiscovery()
   stakeholders.value = []
   currentStep.value = 0
+}
+
+function autofillDiscovery() {
+  discoveryQuestions.forEach((question) => {
+    const template = discoveryTemplates.find((item) => item.id === question.id)
+    if (template) {
+      question.answer = template.answer
+    }
+  })
 }
 
 function autofill() {
@@ -247,6 +352,8 @@ function autofill() {
   project.references.splice(0, project.references.length, ...[
     createReference('Acciona Agua - Proyectos de desalación', 'https://www.acciona.com/es/negocios/agua/desalacion/'),
   ])
+
+  autofillDiscovery()
 
   stakeholders.value = [
     createStakeholder({
@@ -315,6 +422,8 @@ function autofill() {
     }),
   ]
 }
+
+const nextButtonLabel = computed(() => (currentStep.value === 0 ? 'Iniciar proceso' : 'Continuar'))
 </script>
 
 <template>
@@ -536,10 +645,46 @@ function autofill() {
             </form>
           </section>
 
-          <section v-else-if="currentStep === 1" class="space-y-10">
+          <section v-else-if="currentStep === 1" class="space-y-8">
             <div class="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-6 md:flex-row md:items-center md:justify-between">
               <div>
-                <h2 class="text-xl font-semibold text-slate-800">Paso 2 · Identificación y priorización</h2>
+                <h2 class="text-xl font-semibold text-slate-800">Paso 2 · Afinar supuestos</h2>
+                <p class="mt-1 text-sm text-slate-600">
+                  Valida criterios técnicos y estratégicos antes de profundizar en el mapeo. Responde cada pregunta o utiliza el
+                  auto rellenado del caso de Níjar.
+                </p>
+              </div>
+              <button
+                type="button"
+                @click="autofillDiscovery"
+                class="inline-flex items-center justify-center gap-2 rounded-full bg-primary-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-primary-600/40 transition hover:bg-primary-500"
+              >
+                <span class="inline-block h-2 w-2 rounded-full bg-white" />
+                Auto rellenar respuestas demo
+              </button>
+            </div>
+
+            <div class="grid gap-6">
+              <article
+                v-for="question in discoveryQuestions"
+                :key="question.id"
+                class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+              >
+                <h3 class="text-base font-semibold text-slate-800">{{ question.prompt }}</h3>
+                <textarea
+                  v-model="question.answer"
+                  rows="3"
+                  class="mt-4 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 shadow-inner shadow-slate-100 focus:border-primary-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-200"
+                  placeholder="Redacta la mejor respuesta disponible"
+                />
+              </article>
+            </div>
+          </section>
+
+          <section v-else-if="currentStep === 2" class="space-y-10">
+            <div class="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-6 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 class="text-xl font-semibold text-slate-800">Paso 3 · Identificación y priorización</h2>
                 <p class="mt-1 text-sm text-slate-600">
                   Registra a cada actor, asigna su nivel de influencia e interés, e identifica la actitud predominante.
                 </p>
@@ -659,7 +804,7 @@ function autofill() {
           <section v-else class="space-y-10">
             <div class="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-6 md:flex-row md:items-center md:justify-between">
               <div>
-                <h2 class="text-xl font-semibold text-slate-800">Paso 3 · Visualización y narrativa</h2>
+                <h2 class="text-xl font-semibold text-slate-800">Paso 4 · Visualización y narrativa</h2>
                 <p class="mt-1 text-sm text-slate-600">
                   Analiza el mapa posicionando a cada actor según su influencia e interés y conecta la historia con los hitos
                   del proyecto.
@@ -824,7 +969,7 @@ function autofill() {
               :disabled="!canAdvance"
               @click="nextStep"
             >
-              Continuar
+              {{ nextButtonLabel }}
             </button>
             <button
               v-else
