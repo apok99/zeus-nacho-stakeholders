@@ -606,9 +606,19 @@ function removeStakeholder(id) {
   }
 }
 
+function ensureStakeholderCatalog() {
+  if (stakeholders.value.length === 0) {
+    loadStakeholderSuggestions()
+  }
+}
+
 function nextStep() {
   if (currentStep.value < steps.length - 1 && canAdvance.value) {
     currentStep.value += 1
+
+    if (currentStep.value === 2) {
+      ensureStakeholderCatalog()
+    }
   }
 }
 
@@ -724,8 +734,8 @@ function autofill() {
 const nextButtonLabel = computed(() => (currentStep.value === 0 ? 'Iniciar proceso' : 'Continuar'))
 
 watch(currentStep, (step) => {
-  if (step === 2 && stakeholders.value.length === 0) {
-    loadStakeholderSuggestions()
+  if (step === 2) {
+    ensureStakeholderCatalog()
   }
 })
 </script>
